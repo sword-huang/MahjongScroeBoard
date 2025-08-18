@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MahjongScroeBoard</string>
     <string name="action_settings">Settings</string>
+    <string name="action_about">關於</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -43,4 +44,10 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string-array name="default_player_names">
+        <item>劍山</item>
+        <item>心華</item>
+        <item>予謙</item>
+        <item>予凡</item>
+    </string-array>
 </resources>

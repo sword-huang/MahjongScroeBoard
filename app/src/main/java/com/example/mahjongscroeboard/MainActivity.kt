@@ -1,5 +1,7 @@
 package com.example.mahjongscroeboard
 
+import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -47,8 +49,26 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_about -> {
+                showAboutDialog()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showAboutDialog() {
+        val version = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            "N/A"
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.action_about)
+            .setMessage("版本: $version")
+            .setPositiveButton("確定", null)
+            .show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

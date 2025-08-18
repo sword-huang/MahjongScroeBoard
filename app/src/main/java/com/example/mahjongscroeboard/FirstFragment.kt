@@ -2,44 +2,57 @@ package com.example.mahjongscroeboard
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.navigation.fragment.findNavController
 import com.example.mahjongscroeboard.databinding.FragmentFirstBinding
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val history = mutableListOf<GameState>()
     private var historyIndex = -1
 
-    data class GameState(val buttonTexts: List<String>)
+    private lateinit var playerEditTexts: List<EditText>
+    private lateinit var playerLabels: List<View>
+
+    data class GameState(val buttonTexts: List<String>, val playerNames: List<String>)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        playerEditTexts = listOf(
+            binding.edittextPlayer1,
+            binding.edittextPlayer2,
+            binding.edittextPlayer3,
+            binding.edittextPlayer4
+        )
+
+        playerLabels = listOf(
+            binding.textview21,
+            binding.textview31,
+            binding.textview41,
+            binding.textview51
+        )
+
+        setupPlayerNameInputs()
 
         val buttons = listOf(
             binding.button22, binding.button23, binding.button24, binding.button25,
@@ -60,10 +73,10 @@ class FirstFragment : Fragment() {
         )
 
         val column1 = listOf(binding.textview11, binding.textview21, binding.textview31, binding.textview41, binding.textview51, binding.textview61)
-        val column2 = listOf(binding.textview12, binding.button22, binding.button32, binding.button42, binding.button52, binding.total2)
-        val column3 = listOf(binding.textview13, binding.button23, binding.button33, binding.button43, binding.button53, binding.total3)
-        val column4 = listOf(binding.textview14, binding.button24, binding.button34, binding.button44, binding.button54, binding.total4)
-        val column5 = listOf(binding.textview15, binding.button25, binding.button35, binding.button45, binding.button55, binding.total5)
+        val column2 = listOf(binding.edittextPlayer1, binding.button22, binding.button32, binding.button42, binding.button52, binding.total2)
+        val column3 = listOf(binding.edittextPlayer2, binding.button23, binding.button33, binding.button43, binding.button53, binding.total3)
+        val column4 = listOf(binding.edittextPlayer3, binding.button24, binding.button34, binding.button44, binding.button54, binding.total4)
+        val column5 = listOf(binding.edittextPlayer4, binding.button25, binding.button35, binding.button45, binding.button55, binding.total5)
 
         val columns = listOf(column1, column2, column3, column4, column5)
         val colors = listOf(Color.TRANSPARENT, Color.LTGRAY, Color.CYAN, Color.YELLOW, Color.MAGENTA)
@@ -111,6 +124,40 @@ class FirstFragment : Fragment() {
         }
     }
 
+    private fun setupPlayerNameInputs() {
+        val defaultPlayerNames = resources.getStringArray(R.array.default_player_names)
+        playerEditTexts.forEachIndexed { index, editText ->
+            if (index < defaultPlayerNames.size) {
+                editText.setText(defaultPlayerNames[index])
+                (playerLabels[index] as? android.widget.TextView)?.text = defaultPlayerNames[index]
+            }
+
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    (playerLabels[index] as? android.widget.TextView)?.text = s.toString()
+                    checkForDuplicateNames()
+                    saveState()
+                }
+            })
+        }
+    }
+
+    private fun checkForDuplicateNames() {
+        val names = playerEditTexts.map { it.text.toString() }
+        playerEditTexts.forEach { editText ->
+            val currentName = editText.text.toString()
+            if (currentName.isNotEmpty() && names.count { it == currentName } > 1) {
+                editText.error = "名稱重複"
+            } else {
+                editText.error = null
+            }
+        }
+    }
+
     private fun setupButton(button: Button) {
         button.setOnClickListener {
             val currentValue = button.text.toString().toInt()
@@ -131,10 +178,11 @@ class FirstFragment : Fragment() {
         buttons.forEach { button ->
             buttonTexts.add(button.text.toString())
         }
+        val playerNames = playerEditTexts.map { it.text.toString() }
         if (historyIndex < history.size - 1) {
             history.subList(historyIndex + 1, history.size).clear()
         }
-        history.add(GameState(buttonTexts))
+        history.add(GameState(buttonTexts, playerNames))
         historyIndex++
     }
 
@@ -147,6 +195,9 @@ class FirstFragment : Fragment() {
         )
         buttons.forEachIndexed { index, button ->
             button.text = gameState.buttonTexts[index]
+        }
+        playerEditTexts.forEachIndexed { index, editText ->
+            editText.setText(gameState.playerNames[index])
         }
         updateTotals()
     }
