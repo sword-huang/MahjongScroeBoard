@@ -12,7 +12,13 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.mahjongscroeboard.databinding.FragmentFirstBinding
+import com.example.mahjongscroeboard.db.AppDatabase
+import com.example.mahjongscroeboard.db.GameRecord
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+import androidx.navigation.fragment.findNavController
 
 class FirstFragment : Fragment() {
 
@@ -121,6 +127,46 @@ class FirstFragment : Fragment() {
             }
             saveState()
             updateTotals()
+        }
+
+        binding.saveButton.setOnClickListener {
+            saveGameRecord()
+        }
+
+        binding.goToSecondFragmentButton.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+
+        binding.goToSecondFragmentButton.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+    }
+
+    private fun saveGameRecord() {
+        lifecycleScope.launch {
+            val playerNames = playerEditTexts.map { it.text.toString() }
+            val scores = listOf(
+                binding.total2.text.toString().toInt(),
+                binding.total3.text.toString().toInt(),
+                binding.total4.text.toString().toInt(),
+                binding.total5.text.toString().toInt()
+            )
+
+            val record = GameRecord(
+                player1Name = playerNames[0],
+                player1Score = scores[0],
+                player2Name = playerNames[1],
+                player2Score = scores[1],
+                player3Name = playerNames[2],
+                player3Score = scores[2],
+                player4Name = playerNames[3],
+                player4Score = scores[3]
+            )
+
+            val db = AppDatabase.getDatabase(requireContext())
+            db.gameRecordDao().insert(record)
+
+            Snackbar.make(requireView(), "戰績已儲存", Snackbar.LENGTH_SHORT).show()
         }
     }
 
