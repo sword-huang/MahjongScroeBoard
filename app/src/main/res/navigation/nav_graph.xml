@@ -3,12 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/player_stats_fragment">
+
+    <fragment
+        android:id="@+id/player_stats_fragment"
+        android:name="com.example.mahjongscroeboard.ui.PlayerStatsFragment"
+        android:label="戰績總覽"
+        tools:layout="@layout/fragment_player_stats">
+        <action
+            android:id="@+id/action_player_stats_fragment_to_game_details_fragment"
+            app:destination="@id/game_details_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/game_details_fragment"
+        android:name="com.example.mahjongscroeboard.ui.GameDetailsFragment"
+        android:label="個人紀錄"
+        tools:layout="@layout/fragment_game_details">
+        <argument
+            android:name="playerId"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.mahjongscroeboard.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="First Fragment"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -18,11 +38,7 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.mahjongscroeboard.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:label="Second Fragment"
+        tools:layout="@layout/fragment_second" />
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
 </navigation>

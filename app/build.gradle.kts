@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
 }
 
 val version_name = String.format("1.0.%tY%<tm%<td%<tH%<tM", Calendar.getInstance())

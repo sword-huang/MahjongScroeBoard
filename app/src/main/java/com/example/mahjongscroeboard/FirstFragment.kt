@@ -136,10 +136,6 @@ class FirstFragment : Fragment() {
         binding.goToSecondFragmentButton.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
-
-        binding.goToSecondFragmentButton.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
     }
 
     private fun saveGameRecord() {
