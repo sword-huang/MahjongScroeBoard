@@ -14,8 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.mahjongscroeboard.databinding.FragmentFirstBinding
-import com.example.mahjongscroeboard.db.AppDatabase
-import com.example.mahjongscroeboard.db.GameRecord
+import com.example.mahjongscroeboard.data.db.AppDatabase
+import com.example.mahjongscroeboard.data.db.GameRecord
+import com.example.mahjongscroeboard.data.db.Player
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
@@ -133,34 +134,64 @@ class FirstFragment : Fragment() {
             saveGameRecord()
         }
 
-        binding.goToSecondFragmentButton.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        binding.goToPlayerStatsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_FirstFragment_to_player_stats_fragment)
         }
     }
 
     private fun saveGameRecord() {
         lifecycleScope.launch {
             val playerNames = playerEditTexts.map { it.text.toString() }
-            val scores = listOf(
-                binding.total2.text.toString().toInt(),
-                binding.total3.text.toString().toInt(),
-                binding.total4.text.toString().toInt(),
-                binding.total5.text.toString().toInt()
-            )
-
-            val record = GameRecord(
-                player1Name = playerNames[0],
-                player1Score = scores[0],
-                player2Name = playerNames[1],
-                player2Score = scores[1],
-                player3Name = playerNames[2],
-                player3Score = scores[2],
-                player4Name = playerNames[3],
-                player4Score = scores[3]
-            )
-
             val db = AppDatabase.getDatabase(requireContext())
-            db.gameRecordDao().insert(record)
+            val gameDao = db.gameDao()
+
+            val playerIds = playerNames.map { name ->
+                if (name.isNotBlank()) {
+                    var player = gameDao.getPlayerByName(name)
+                    if (player == null) {
+                        val newPlayerId = gameDao.insertPlayer(Player(name = name))
+                        newPlayerId.toInt()
+                    } else {
+                        player.id
+                    }
+                } else {
+                    -1 // Invalid player id
+                }
+            }
+
+            val playerButtons = listOf(
+                listOf(binding.button22, binding.button32, binding.button42, binding.button52),
+                listOf(binding.button23, binding.button33, binding.button43, binding.button53),
+                listOf(binding.button24, binding.button34, binding.button44, binding.button54),
+                listOf(binding.button25, binding.button35, binding.button45, binding.button55)
+            )
+
+            val selfDrawButtons = listOf(
+                binding.button22,
+                binding.button33,
+                binding.button44,
+                binding.button55
+            )
+
+            playerButtons.forEachIndexed { index, buttons ->
+                val playerId = playerIds[index]
+                if (playerId != -1) {
+                    buttons.forEach { button ->
+                        val winCount = button.text.toString().toIntOrNull() ?: 0
+                        if (winCount > 0) {
+                            val winType = if (selfDrawButtons.contains(button)) "TSUMO" else "RON"
+                            for (i in 0 until winCount) {
+                                val record = GameRecord(
+                                    playerId = playerId,
+                                    winType = winType,
+                                    score = 1 // Dummy score
+                                )
+                                gameDao.insertGameRecord(record)
+                            }
+                        }
+                    }
+                }
+            }
 
             Snackbar.make(requireView(), "戰績已儲存", Snackbar.LENGTH_SHORT).show()
         }
