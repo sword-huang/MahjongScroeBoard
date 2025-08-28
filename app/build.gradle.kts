@@ -34,6 +34,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            setProperty("archivesBaseName", "MahjongScoreBoard-$version_name")
+        }
+        debug {
+            setProperty("archivesBaseName", "MahjongScoreBoard-$version_name")
         }
     }
     compileOptions {
@@ -68,21 +72,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
-    tasks.register("renameApk", Copy::class) {
-    from("build/outputs/apk/release")
-    include("app-release-unsigned.apk")
-    destinationDir = file("build/outputs/apk/release")
-    rename { "MahjongScoreBoard-${android.defaultConfig.versionName}.apk" }
-    doLast {
-        delete("build/outputs/apk/release/app-release-unsigned.apk")
-    }
-}
-
-tasks.whenTaskAdded {
-    if (name == "createReleaseApkListingFileRedirect") {
-        mustRunAfter("renameApk")
-    }
-    if (name == "packageRelease") {
-        finalizedBy("renameApk")
-    }
-}
+    
