@@ -5,8 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.mahjongscroeboard.data.db.AppDatabase
 import com.example.mahjongscroeboard.data.db.PlayerStats
+import kotlinx.coroutines.launch
 
 class PlayerStatsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -36,6 +38,13 @@ class PlayerStatsViewModel(application: Application) : AndroidViewModel(applicat
         }
 
         (playerStats as MutableLiveData).value = sortedStats
+    }
+
+    fun clearAllRecords() {
+        viewModelScope.launch {
+            gameDao.clearAllGameRecords()
+            gameDao.clearAllPlayers()
+        }
     }
 }
 

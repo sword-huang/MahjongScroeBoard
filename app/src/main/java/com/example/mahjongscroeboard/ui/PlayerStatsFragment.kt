@@ -1,13 +1,13 @@
 package com.example.mahjongscroeboard.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mahjongscroeboard.R
 import com.example.mahjongscroeboard.databinding.FragmentPlayerStatsBinding
 
 class PlayerStatsFragment : Fragment() {
@@ -16,6 +16,11 @@ class PlayerStatsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: PlayerStatsViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,5 +75,31 @@ class PlayerStatsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_player_stats, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_clear_records -> {
+                showClearConfirmationDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showClearConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("清除戰績")
+            .setMessage("確定要清除所有戰績嗎？此操作無法復原。")
+            .setPositiveButton("確定") { _, _ ->
+                viewModel.clearAllRecords()
+            }
+            .setNegativeButton("取消", null)
+            .show()
     }
 }

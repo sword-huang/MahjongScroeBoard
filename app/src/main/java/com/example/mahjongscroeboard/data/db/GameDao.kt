@@ -39,4 +39,9 @@ interface GameDao {
     @Query("SELECT * FROM game_records WHERE playerId = :playerId ORDER BY date DESC")
     fun getGameRecordsForPlayer(playerId: Int): Flow<List<GameRecord>>
 
+    @Query("DELETE FROM game_records")
+    suspend fun clearAllGameRecords()
+
+    @Query("DELETE FROM players")
+    suspend fun clearAllPlayers()
 }
