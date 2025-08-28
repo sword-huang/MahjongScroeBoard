@@ -21,9 +21,9 @@ class PlayerStatsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = players[position]
         holder.playerName.text = player.playerName
-        holder.totalWins.text = "總胡: ${player.totalWins}"
-        holder.tsumoCount.text = "自摸: ${player.tsumoCount}"
-        holder.ronCount.text = "放槍胡: ${player.ronCount}"
+        holder.totalWins.text = player.totalWins.toString()
+        holder.tsumoCount.text = player.tsumoCount.toString()
+        holder.ronCount.text = player.ronCount.toString()
         holder.itemView.setOnClickListener { onItemClicked(player) }
     }
 

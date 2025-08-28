@@ -3,34 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/playerName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/totalWins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="總胡: 0" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tsumoCount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="自摸: 0" />
+        android:layout_weight="1"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/ronCount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="放槍胡: 0" />
+        android:layout_weight="1"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/totalWins"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp" />
 
 </LinearLayout>
