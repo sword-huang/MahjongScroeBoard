@@ -10,27 +10,35 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp" />
+        android:textSize="24sp"
+        android:background="@android:color/holo_green_light"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/tsumoCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp" />
+        android:textSize="24sp"
+        android:background="@android:color/holo_blue_bright"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/ronCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp" />
+        android:textSize="24sp"
+        android:background="@android:color/holo_orange_light"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/totalWins"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp" />
+        android:textSize="24sp"
+        android:background="@android:color/holo_purple"
+        android:gravity="center"/>
 
 </LinearLayout>
