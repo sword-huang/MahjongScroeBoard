@@ -49,6 +49,22 @@ class PlayerStatsFragment : Fragment() {
                 }
             }
         }
+
+        binding.header.headerPlayerName.setOnClickListener {
+            viewModel.sort(SortColumn.PLAYER_NAME)
+        }
+
+        binding.header.headerTsumoCount.setOnClickListener {
+            viewModel.sort(SortColumn.TSUMO_COUNT)
+        }
+
+        binding.header.headerRonCount.setOnClickListener {
+            viewModel.sort(SortColumn.RON_COUNT)
+        }
+
+        binding.header.headerTotalWins.setOnClickListener {
+            viewModel.sort(SortColumn.TOTAL_WINS)
+        }
     }
 
     override fun onDestroyView() {
