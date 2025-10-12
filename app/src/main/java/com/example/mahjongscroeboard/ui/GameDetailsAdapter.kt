@@ -22,8 +22,7 @@ class GameDetailsAdapter(private val records: List<GameRecord>) : RecyclerView.A
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = records[position]
         holder.gameDate.text = dateFormat.format(Date(record.date))
-        holder.winType.text = record.winType
-        holder.score.text = "${record.score}點"
+        holder.winType.text = if (record.winType == "RON") "放槍胡" else "自摸胡"
     }
 
     override fun getItemCount() = records.size
@@ -31,6 +30,5 @@ class GameDetailsAdapter(private val records: List<GameRecord>) : RecyclerView.A
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val gameDate: TextView = itemView.findViewById(R.id.gameDate)
         val winType: TextView = itemView.findViewById(R.id.winType)
-        val score: TextView = itemView.findViewById(R.id.score)
     }
 }
