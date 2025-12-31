@@ -2,7 +2,21 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MahjongScroeBoard" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/green_primary</item>
+        <item name="colorPrimaryVariant">@color/green_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <item name="colorSecondary">@color/gold_accent</item>
+        <item name="colorSecondaryVariant">@color/gold_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        
+        <item name="android:colorBackground">@color/surface_cream</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorError">@color/red_error</item>
+        
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/surface_cream</item>
     </style>
 
     <style name="Theme.MahjongScroeBoard" parent="Base.Theme.MahjongScroeBoard" />
