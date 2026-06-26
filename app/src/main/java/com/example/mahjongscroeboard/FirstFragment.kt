@@ -19,7 +19,6 @@ import com.example.mahjongscroeboard.data.db.GameRecord
 import com.example.mahjongscroeboard.data.db.Player
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import androidx.navigation.fragment.findNavController
 
 class FirstFragment : Fragment() {
 
@@ -132,10 +131,6 @@ class FirstFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             saveGameRecord()
-        }
-
-        binding.goToPlayerStatsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_player_stats_fragment)
         }
     }
 

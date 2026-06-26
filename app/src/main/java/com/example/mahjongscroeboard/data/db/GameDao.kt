@@ -18,6 +18,18 @@ interface GameDao {
     @Insert
     suspend fun insertGameRecord(gameRecord: GameRecord)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlayers(players: List<Player>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGameRecords(gameRecords: List<GameRecord>)
+
+    @Query("SELECT * FROM players ORDER BY id ASC")
+    suspend fun getAllPlayers(): List<Player>
+
+    @Query("SELECT * FROM game_records ORDER BY id ASC")
+    suspend fun getAllGameRecords(): List<GameRecord>
+
     @Query("""
         SELECT 
             p.id as playerId,

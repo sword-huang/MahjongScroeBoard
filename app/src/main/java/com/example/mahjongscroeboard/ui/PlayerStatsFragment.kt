@@ -1,14 +1,24 @@
 package com.example.mahjongscroeboard.ui
 
+import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mahjongscroeboard.R
 import com.example.mahjongscroeboard.databinding.FragmentPlayerStatsBinding
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PlayerStatsFragment : Fragment() {
 
@@ -17,9 +27,20 @@ class PlayerStatsFragment : Fragment() {
 
     private lateinit var viewModel: PlayerStatsViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+    private val exportBackupLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            exportBackup(uri)
+        }
+    }
+
+    private val importBackupLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            importBackup(uri)
+        }
     }
 
     override fun onCreateView(
@@ -77,19 +98,63 @@ class PlayerStatsFragment : Fragment() {
         _binding = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_player_stats, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    fun onExportRecordsMenuClicked(): Boolean {
+        launchExportFilePicker()
+        return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_clear_records -> {
-                showClearConfirmationDialog()
-                true
+    fun onImportRecordsMenuClicked(): Boolean {
+        showImportConfirmationDialog()
+        return true
+    }
+
+    fun onClearRecordsMenuClicked(): Boolean {
+        showClearConfirmationDialog()
+        return true
+    }
+
+    private fun launchExportFilePicker() {
+        val fileName = "mahjong_backup_${timestampForFileName()}.json"
+        exportBackupLauncher.launch(fileName)
+    }
+
+    private fun showImportConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("匯入戰績")
+            .setMessage("匯入會覆蓋目前所有戰績，確定繼續嗎？")
+            .setPositiveButton("確定") { _, _ ->
+                importBackupLauncher.launch(arrayOf("application/json"))
             }
-            else -> super.onOptionsItemSelected(item)
+            .setNegativeButton("取消", null)
+            .show()
+    }
+
+    private fun exportBackup(uri: Uri) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            runCatching {
+                viewModel.exportBackup(uri)
+            }.onSuccess {
+                Snackbar.make(requireView(), "匯出成功", Snackbar.LENGTH_SHORT).show()
+            }.onFailure { e ->
+                Snackbar.make(requireView(), "匯出失敗：${e.message ?: "未知錯誤"}", Snackbar.LENGTH_LONG).show()
+            }
         }
+    }
+
+    private fun importBackup(uri: Uri) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            runCatching {
+                viewModel.importBackup(uri)
+            }.onSuccess {
+                Snackbar.make(requireView(), "匯入成功", Snackbar.LENGTH_SHORT).show()
+            }.onFailure { e ->
+                Snackbar.make(requireView(), "匯入失敗：${e.message ?: "未知錯誤"}", Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun timestampForFileName(): String {
+        return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     }
 
     private fun showClearConfirmationDialog() {
