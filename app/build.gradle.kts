@@ -34,10 +34,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            setProperty("archivesBaseName", "MahjongScoreBoard-$version_name")
         }
         debug {
-            setProperty("archivesBaseName", "MahjongScoreBoard-$version_name")
         }
     }
     compileOptions {
@@ -53,6 +51,14 @@ android {
     }
 
     
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("MahjongScoreBoard-$version_name-${variant.name}.apk")
+        }
+    }
 }
 
 
