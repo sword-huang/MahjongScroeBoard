@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
 }
 
-val version_name = String.format("1.0.%tY%<tm%<td%<tH%<tM", Calendar.getInstance())
+val version_name = String.format("1.1.%tY%<tm%<td%<tH%<tM", Calendar.getInstance())
 val calendar = Calendar.getInstance()
 val release_date = "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.DAY_OF_MONTH)}"
 

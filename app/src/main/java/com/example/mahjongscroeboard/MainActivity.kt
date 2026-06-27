@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onMenuItemSelected(item: MenuItem): Boolean {
                 return when (item.itemId) {
-                    R.id.action_settings -> true
                     R.id.action_about -> {
                         showAboutDialog()
                         true
@@ -77,12 +76,6 @@ class MainActivity : AppCompatActivity() {
                 binding.root.post { performPendingStatsMenuAction() }
             }
             invalidateMenu()
-        }
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
         }
     }
 
