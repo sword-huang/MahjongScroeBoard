@@ -2,6 +2,7 @@ package com.example.mahjongscroeboard.data.db
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -13,7 +14,8 @@ import androidx.room.PrimaryKey
             childColumns = ["playerId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index("playerId")]
 )
 data class GameRecord(
     @PrimaryKey(autoGenerate = true)
