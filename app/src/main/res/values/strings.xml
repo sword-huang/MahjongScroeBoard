@@ -6,6 +6,8 @@
     <string name="action_export_records">匯出戰績</string>
     <string name="action_import_records">匯入戰績</string>
     <string name="action_clear_records">清除戰績</string>
+    <string name="share_to_line">分享到 LINE</string>
+    <string name="share_failed">分享失敗</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Mahjong Score Board</string>
     <string name="second_fragment_label">Second Fragment</string>

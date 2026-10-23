@@ -1,5 +1,7 @@
 package com.example.mahjongscroeboard
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -131,6 +133,24 @@ class FirstFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             saveGameRecord()
+        }
+
+        binding.shareLineButton.setOnClickListener {
+            shareToLine()
+        }
+    }
+
+    private fun shareToLine() {
+        val card = binding.scoreCard
+        val bitmap = Bitmap.createBitmap(card.width, card.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(Color.WHITE)
+        card.draw(canvas)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (!LineShare.shareBitmap(requireContext(), bitmap)) {
+                Snackbar.make(requireView(), R.string.share_failed, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 

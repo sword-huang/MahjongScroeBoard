@@ -1,5 +1,7 @@
 package com.example.mahjongscroeboard.ui
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.mahjongscroeboard.LineShare
 import com.example.mahjongscroeboard.R
 import com.example.mahjongscroeboard.databinding.FragmentPlayerStatsBinding
 import com.google.android.material.snackbar.Snackbar
@@ -90,6 +95,53 @@ class PlayerStatsFragment : Fragment() {
 
         binding.header.headerTotalWins.setOnClickListener {
             viewModel.sort(SortColumn.TOTAL_WINS)
+        }
+
+        binding.shareLineButton.setOnClickListener {
+            shareToLine()
+        }
+    }
+
+    private fun shareToLine() {
+        val adapter = binding.recyclerView.adapter
+        if (adapter == null || adapter.itemCount == 0) {
+            Snackbar.make(requireView(), "尚無戰績可分享", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        val width = binding.recyclerView.width
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+        val unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+
+        // 列表可能超出畫面，逐列建立 View 以輸出完整內容
+        val rows = mutableListOf<View>()
+        for (i in 0 until adapter.itemCount) {
+            val holder = adapter.createViewHolder(binding.recyclerView, adapter.getItemViewType(i))
+            @Suppress("UNCHECKED_CAST")
+            (adapter as RecyclerView.Adapter<RecyclerView.ViewHolder>).onBindViewHolder(holder, i)
+            rows.add(holder.itemView)
+        }
+        rows.forEach { row ->
+            row.measure(widthSpec, unspecified)
+            row.layout(0, 0, row.measuredWidth, row.measuredHeight)
+        }
+
+        val headerHeight = binding.header.root.height
+        val totalHeight = headerHeight + rows.sumOf { it.measuredHeight }
+        val bitmap = Bitmap.createBitmap(width, totalHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(ContextCompat.getColor(requireContext(), R.color.surface_cream))
+        binding.header.root.draw(canvas)
+        canvas.translate(0f, headerHeight.toFloat())
+        rows.forEach { row ->
+            row.draw(canvas)
+            canvas.translate(0f, row.measuredHeight.toFloat())
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (!LineShare.shareBitmap(requireContext(), bitmap)) {
+                Snackbar.make(requireView(), R.string.share_failed, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
