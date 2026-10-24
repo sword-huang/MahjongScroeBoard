@@ -17,21 +17,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import com.example.mahjongscroeboard.databinding.ActivityMainBinding
-import com.example.mahjongscroeboard.ui.PlayerStatsFragment
-import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private var currentDestinationId: Int? = null
-    private var pendingStatsMenuAction: StatsMenuAction? = null
-
-    private enum class StatsMenuAction {
-        EXPORT,
-        IMPORT,
-        CLEAR
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,15 +54,6 @@ class MainActivity : AppCompatActivity() {
                     R.id.action_view_player_stats -> {
                         navigateToPlayerStats()
                     }
-                    R.id.action_export_records -> {
-                        dispatchToPlayerStats(StatsMenuAction.EXPORT)
-                    }
-                    R.id.action_import_records -> {
-                        dispatchToPlayerStats(StatsMenuAction.IMPORT)
-                    }
-                    R.id.action_clear_records -> {
-                        dispatchToPlayerStats(StatsMenuAction.CLEAR)
-                    }
                     else -> false
                 }
             }
@@ -80,17 +62,8 @@ class MainActivity : AppCompatActivity() {
         currentDestinationId = navController.currentDestination?.id
         navController.addOnDestinationChangedListener { _, destination, _ ->
             currentDestinationId = destination.id
-            if (destination.id == R.id.player_stats_fragment) {
-                binding.root.post { performPendingStatsMenuAction() }
-            }
             invalidateMenu()
         }
-    }
-
-    private fun getVisiblePlayerStatsFragment(): PlayerStatsFragment? {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as? NavHostFragment
-        return navHostFragment?.childFragmentManager?.primaryNavigationFragment as? PlayerStatsFragment
     }
 
     private fun navigateToPlayerStats(): Boolean {
@@ -99,38 +72,6 @@ class MainActivity : AppCompatActivity() {
         }
         findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.player_stats_fragment)
         return true
-    }
-
-    private fun dispatchToPlayerStats(action: StatsMenuAction): Boolean {
-        val visibleFragment = getVisiblePlayerStatsFragment()
-        if (visibleFragment != null) {
-            return runStatsMenuAction(visibleFragment, action)
-        }
-
-        pendingStatsMenuAction = action
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        if (currentDestinationId != R.id.player_stats_fragment) {
-            navController.navigate(R.id.player_stats_fragment)
-        } else {
-            binding.root.post { performPendingStatsMenuAction() }
-        }
-        return true
-    }
-
-    private fun performPendingStatsMenuAction() {
-        val pendingAction = pendingStatsMenuAction ?: return
-        val fragment = getVisiblePlayerStatsFragment() ?: return
-        if (runStatsMenuAction(fragment, pendingAction)) {
-            pendingStatsMenuAction = null
-        }
-    }
-
-    private fun runStatsMenuAction(fragment: PlayerStatsFragment, action: StatsMenuAction): Boolean {
-        return when (action) {
-            StatsMenuAction.EXPORT -> fragment.onExportRecordsMenuClicked()
-            StatsMenuAction.IMPORT -> fragment.onImportRecordsMenuClicked()
-            StatsMenuAction.CLEAR -> fragment.onClearRecordsMenuClicked()
-        }
     }
 
     private fun showAboutDialog() {

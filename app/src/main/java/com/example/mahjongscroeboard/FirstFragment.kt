@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
@@ -124,15 +125,27 @@ class FirstFragment : Fragment() {
         }
 
         binding.clearButton.setOnClickListener {
-            buttons.forEach { button ->
-                button.text = "0"
-            }
-            saveState()
-            updateTotals()
+            AlertDialog.Builder(requireContext())
+                .setTitle("清除")
+                .setMessage("確定要清除目前所有數字嗎？")
+                .setPositiveButton("確定") { _, _ ->
+                    buttons.forEach { button ->
+                        button.text = "0"
+                    }
+                    saveState()
+                    updateTotals()
+                }
+                .setNegativeButton("取消", null)
+                .show()
         }
 
         binding.saveButton.setOnClickListener {
-            saveGameRecord()
+            AlertDialog.Builder(requireContext())
+                .setTitle("儲存戰績")
+                .setMessage("確定要儲存目前的戰績嗎？")
+                .setPositiveButton("確定") { _, _ -> saveGameRecord() }
+                .setNegativeButton("取消", null)
+                .show()
         }
 
         binding.shareLineButton.setOnClickListener {

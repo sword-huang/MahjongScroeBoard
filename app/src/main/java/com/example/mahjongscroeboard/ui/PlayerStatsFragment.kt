@@ -100,6 +100,10 @@ class PlayerStatsFragment : Fragment() {
         binding.shareLineButton.setOnClickListener {
             shareToLine()
         }
+
+        binding.exportButton.setOnClickListener { launchExportFilePicker() }
+        binding.importButton.setOnClickListener { showImportConfirmationDialog() }
+        binding.clearRecordsButton.setOnClickListener { showClearConfirmationDialog() }
     }
 
     private fun shareToLine() {
@@ -148,21 +152,6 @@ class PlayerStatsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun onExportRecordsMenuClicked(): Boolean {
-        launchExportFilePicker()
-        return true
-    }
-
-    fun onImportRecordsMenuClicked(): Boolean {
-        showImportConfirmationDialog()
-        return true
-    }
-
-    fun onClearRecordsMenuClicked(): Boolean {
-        showClearConfirmationDialog()
-        return true
     }
 
     private fun launchExportFilePicker() {
