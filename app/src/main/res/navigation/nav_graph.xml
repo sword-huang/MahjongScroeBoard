@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.mahjongscroeboard.FirstFragment"
-        android:label="計分"
+        android:label="麻將計分器"
         tools:layout="@layout/fragment_first">
 
         <action
